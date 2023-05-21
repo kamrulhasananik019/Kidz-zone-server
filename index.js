@@ -30,7 +30,11 @@ async function run() {
 
 
         const tabViewCardCollection = client.db('kids_zone').collection('tabViweCard');
-
+        app.get('/categories',async(req,res)=>{
+            const cursor=tabViewCardCollection.find();
+            const result=await cursor.toArray();
+            res.send(result);
+        })
 
         app.get('/categories', async (req, res) => {
             let query = {};
