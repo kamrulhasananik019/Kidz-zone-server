@@ -29,7 +29,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
 
 
-        const tabViweCardCollection = client.db('kids_zone').collection('tabViweCard');
+        const tabViewCardCollection = client.db('kids_zone').collection('tabViweCard');
 
 
         app.get('/categories', async (req, res) => {
@@ -37,7 +37,7 @@ async function run() {
             if (req.query?.category) {
                 query = { category: req.query.category }
             }
-            const cursor = tabViweCardCollection.find(query);
+            const cursor = tabViewCardCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
