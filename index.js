@@ -31,10 +31,10 @@ async function run() {
 
         const tabViewCardCollection = client.db('kids_zone').collection('tabViweCard');
 
-        app.get('/allToys', async (req, res) => {
-            const result = await tabViewCardCollection.find().toArray();
-            res.send(result);
-        });
+        // app.get('/allToys', async (req, res) => {
+        //     const result = await tabViewCardCollection.find().toArray();
+        //     res.send(result);
+        // });
 
         app.get('/categories', async (req, res) => {
             let query = {};
@@ -52,13 +52,8 @@ async function run() {
             res.send(result)
         })
         
-        app.get('/sellerEmail',async(req,res)=>{
-            let query={}
-            if(req.query?.email){
-                query={ email :req.query.sellerEmail}
-            }
-            const cursor = tabViewCardCollection.find(query);
-            const result = await cursor.toArray();
+        app.get('/myToys',async(req,res)=>{
+            const result = await tabViewCardCollection.find(req.query).toArray();
             res.send(result)
         })
     
