@@ -51,8 +51,17 @@ async function run() {
             const result = await tabViewCardCollection.insertOne(addToys)
             res.send(result)
         })
-
-
+        
+        app.get('/sellerEmail',async(req,res)=>{
+            let query={}
+            if(req.query?.email){
+                query={ email :req.query.sellerEmail}
+            }
+            const cursor = tabViewCardCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+    
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
