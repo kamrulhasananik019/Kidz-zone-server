@@ -30,7 +30,11 @@ async function run() {
 
 
         const tabViewCardCollection = client.db('kids_zone').collection('tabViweCard');
-    
+
+        app.get('/allToys', async (req, res) => {
+            const result = await tabViewCardCollection.find().toArray();
+            res.send(result);
+        });
 
         app.get('/categories', async (req, res) => {
             let query = {};
@@ -40,7 +44,15 @@ async function run() {
             const cursor = tabViewCardCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
+        });
+
+        app.post('/addToys',async (req, res) => {
+            const addToys = req.body;
+            const result = await tabViewCardCollection.insertOne(addToys)
+            res.send(result)
         })
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
