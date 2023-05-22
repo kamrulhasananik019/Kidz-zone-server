@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 
@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-
+        // await client.connect();
 
         const tabViewCardCollection = client.db('kids_zone').collection('tabViweCard');
 
@@ -55,7 +55,18 @@ async function run() {
         app.get('/myToys',async(req,res)=>{
             const result = await tabViewCardCollection.find(req.query).toArray();
             res.send(result)
+        });
+
+        app.delete('/myToys/:id',async(req,res)=>{
+            const id=req.params.id;
+            console.log(id);
+            const query={_id : new ObjectId(id)}
+            const result =await tabViewCardCollection.deleteOne(query);
+            res.send(result)
+
         })
+
+        
     
 
         // Send a ping to confirm a successful connection
