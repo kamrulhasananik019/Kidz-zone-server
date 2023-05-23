@@ -45,29 +45,65 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         });
-
-        app.post('/addToys',async (req, res) => {
+        app.post('/addToys', async (req, res) => {
             const addToys = req.body;
             const result = await tabViewCardCollection.insertOne(addToys)
             res.send(result)
         })
-        
-        app.get('/myToys',async(req,res)=>{
-            const result = await tabViewCardCollection.find(req.query).toArray();
+
+
+        app.delete('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: new ObjectId(id) }
+            const result = await tabViewCardCollection.deleteOne(query);
             res.send(result)
         });
 
-        app.delete('/myToys/:id',async(req,res)=>{
-            const id=req.params.id;
-            console.log(id);
-            const query={_id : new ObjectId(id)}
-            const result =await tabViewCardCollection.deleteOne(query);
+        app.get('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const result = await tabViewCardCollection.findOne(filter);
             res.send(result)
+        });
 
+        app.patch('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateToys=req.body;
+            const toys = {
+                $set: {
+                    quantity: updateToys.quantity,
+                    description: updateToys.description,
+                    price: updateToys.price
+                }
+            }
+            const result =await tabViewCardCollection.updateOne(filter,toys ,options);
+            res.send(result)
+        });
+
+
+        app.get('/myToys',async(req,res)=>{
+          
+            const email = req.query.sellerEmail;
+            const query = { sellerEmail: email }
+            const sorted = req.query.sort;
+            const result = await tabViewCardCollection.find(query).sort({ price: sorted }).toArray();
+            res.send(result);
+        });
+
+        app.get('/allToys',async(req,res)=>{
+            const  result= await tabViewCardCollection.find().limit(20).toArray();
+            res.send(result);
+        });
+
+        app.get('/allToys/:id',async(req,res)=>{
+            const id=req.params.id;
+            const filter={_id: new ObjectId (id)};
+            const result=await tabViewCardCollection.findOne(filter);
+            res.send(result);
         })
-
-        
-    
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
